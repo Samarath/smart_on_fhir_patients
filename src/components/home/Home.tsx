@@ -1,23 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, useLocation } from "react-router-dom";
-
-const CLIENT_ID = "d7e59379-df3d-4f7b-813d-d4641a33dceb";
-const REDIRECT_URI = "http://localhost:3000";
-const AUTH_URL =
-  `https://fhir.epic.com/interconnect-fhir-oauth/oauth2/authorize?
-  response_type=code&
-  redirect_uri=${encodeURIComponent(REDIRECT_URI)}&
-  client_id=${CLIENT_ID}&
-  state=1234&
-  scope=Patient.read%20Patient.search%20
-        Encounter.read%20Encounter.search%20
-        MedicationRequest.read%20MedicationRequest.search%20
-        AllergyIntolerance.read%20AllergyIntolerance.search%20
-        Observation.read.labs%20Observation.search.labs%20
-        Observation.read.vitals%20Observation.search.vitals
-`.replace(/\s+/g, "");
-const TOKEN_URL = "https://fhir.epic.com/interconnect-fhir-oauth/oauth2/token";
+import { AUTH_URL, REDIRECT_URI, TOKEN_URL } from "../../config/config.var";
 
 interface PatientData {
   [key: string]: unknown;
@@ -36,6 +20,8 @@ const Home = () => {
   const [patientData, setPatientData] = useState<PatientData | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
+  const CLIENT_ID: string | undefined = process.env.REACT_APP_CLIENT_ID;
+
   useEffect(() => {
     if (code && !accessToken) {
       exchangeCodeForToken(code);
@@ -53,7 +39,7 @@ const Home = () => {
       params.append("grant_type", "authorization_code");
       params.append("code", authCode);
       params.append("redirect_uri", REDIRECT_URI);
-      params.append("client_id", CLIENT_ID);
+      params.append("client_id", CLIENT_ID as string);
 
       const config = {
         headers: {
