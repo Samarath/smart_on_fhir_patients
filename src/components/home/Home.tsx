@@ -14,6 +14,7 @@ interface TokenResponse {
 
 const Home = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const searchParams = new URLSearchParams(location.search);
   const code = searchParams.get("code");
   const [accessToken, setAccessToken] = useState<string>("");
@@ -53,7 +54,7 @@ const Home = () => {
         config
       );
       setAccessToken(response.data.access_token);
-
+      console.log(response.data, "data");
       if (response.data.patient) {
         fetchPatientData(response.data.access_token, response.data.patient);
       }
@@ -65,6 +66,7 @@ const Home = () => {
   };
 
   const fetchPatientData = async (token: string, patientId: string) => {
+    console.log(token, patientId, "checking");
     try {
       const response = await axios.get<PatientData>(
         `https://fhir.epic.com/interconnect-fhir-oauth/api/FHIR/R4/Patient/${patientId}`,
@@ -75,6 +77,7 @@ const Home = () => {
           },
         }
       );
+      console.log(response);
       setPatientData(response.data);
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -83,17 +86,29 @@ const Home = () => {
     }
   };
 
+  const onClickNavigate = () => {
+    navigate("/bulk");
+  };
+
   return (
     <div style={{ textAlign: "center", marginTop: "50px" }}>
       <h1>Epic FHIR Integration</h1>
 
       {!accessToken ? (
-        <button
-          onClick={handleLogin}
-          style={{ padding: "10px", fontSize: "16px" }}
-        >
-          Connect to Epic
-        </button>
+        <>
+          <button
+            onClick={handleLogin}
+            style={{ padding: "10px", fontSize: "16px" }}
+          >
+            Connect to Epic
+          </button>
+          <button
+            onClick={onClickNavigate}
+            style={{ padding: "10px", fontSize: "16px" }}
+          >
+            Get bulk data
+          </button>
+        </>
       ) : (
         <div>
           <h3>Access Token Obtained!</h3>

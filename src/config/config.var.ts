@@ -16,3 +16,19 @@ export const AUTH_URL =
 
 export const TOKEN_URL =
   "https://fhir.epic.com/interconnect-fhir-oauth/oauth2/token";
+
+// const handleAuthenticate = () => {
+//   const scopes = [
+//     "system/Patient.read",
+//     "system/Observation.read",
+//     "system/MedicationRequest.read",
+//     "system/AllergyIntolerance.read",
+//     "system/Encounter.read",
+//   ].join(" ");
+
+//   const authUrl = `https://fhir.epic.com/interconnect-fhir-oauth/oauth2/authorize?response_type=code&redirect_uri=${encodeURIComponent(
+//     "http://localhost:3000/bulk"
+//   )}&client_id=${CLIENT_ID}&scope=${encodeURIComponent(scopes)}`;
+
+//   window.location.href = authUrl;
+// };
